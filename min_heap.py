@@ -1,71 +1,80 @@
 
 
-class min_heap:
-    def __init__(self, _data=None):
-        self.heap = _data if _data is not None else []
+class MinHeap:
+    def __init__(self):
+        self._data = []
 
-    def insert(self, val):
-        self.heap.append(val)
-        self._heapify_up(len(self.heap) - 1)
+    @staticmethod
+    def _check_priority(priority):
+        if not isinstance(priority, (int, float)):
+            raise TypeError("priority must be an int or float")
 
-    def extract_min(self):
-        if not self.heap:
-            return None
-        if len(self.heap) == 1:
-            return self.heap.pop()
-        min_val = self.heap[0]
-        self.heap[0] = self.heap.pop()
-        self._heapify_down(0)
-        return min_val
+    def _sift_up(self, i):
+        data = self._data
+        while i > 0:
+            parent = (i - 1) // 2
+            if data[i][0] < data[parent][0]:
+                data[i], data[parent] = data[parent], data[i]
+                i = parent
+            else:
+                break
 
-    def _heapify_up(self, index):
-        parent_index = (index - 1) // 2
-        if index > 0 and self.heap[index] < self.heap[parent_index]:
-            self.heap[index], self.heap[parent_index] = self.heap[parent_index], self.heap[index]
-            self._heapify_up(parent_index)
-
-    def _heapify_down(self, index):
-        smallest = index
-        left_child = 2 * index + 1
-        right_child = 2 * index + 2
-
-        if left_child < len(self.heap) and self.heap[left_child] < self.heap[smallest]:
-            smallest = left_child
-        if right_child < len(self.heap) and self.heap[right_child] < self.heap[smallest]:
-            smallest = right_child
-
-        if smallest != index:
-            self.heap[index], self.heap[smallest] = self.heap[smallest], self.heap[index]
-            self._heapify_down(smallest)
+    def _sift_down(self, i):
+        data = self._data
+        n = len(data)
+        while True:
+            smallest = i
+            left, right = 2 * i + 1, 2 * i + 2
+            if left < n and data[left][0] < data[smallest][0]:
+                smallest = left
+            if right < n and data[right][0] < data[smallest][0]:
+                smallest = right
+            if smallest == i:
+                break
+            data[i], data[smallest] = data[smallest], data[i]
+            i = smallest
     def push(self, priority, item):
-        self.insert((priority, item))
+        self._check_priority(priority)
+        self._data.append((priority, item))
+        self._sift_up(len(self._data) - 1)
+
     def pop(self):
-        return self.extract_min()
+        if not self._data:
+            raise IndexError("pop from empty heap")
+        top = self._data[0]
+        last = self._data.pop()
+        if self._data:
+            self._data[0] = last
+            self._sift_down(0)
+        return top
     def peek(self):
-        return self.heap[0] if self.heap else None
+        if not self._data:
+            raise IndexError("peek from empty heap")
+        return self._data[0]
+
     @staticmethod
     def build_heap(pairs):
-        heap = min_heap()
-        for priority, item in pairs:
-            heap.insert((priority, item))
+        heap = MinHeap()
+        for priority, _ in pairs:
+            MinHeap._check_priority(priority)
+        heap._data = list(pairs)
+        for i in range(len(heap._data) // 2 - 1, -1, -1):
+            heap._sift_down(i)
         return heap
-
     def drain(self):
-        while self.heap:
-            yield self.extract_min()
+        result = []
+        while self._data:
+            result.append(self.pop())
+        return result
     def to_list(self):
-        return self.heap[:]
+        return self._data[:]
     def is_valid_heap(self):
-        for i in range(len(self.heap)):
-            left = 2 * i + 1
-            right = 2 * i + 2
-            if left < len(self.heap) and self.heap[left] < self.heap[i]:
-                return False
-            if right < len(self.heap) and self.heap[right] < self.heap[i]:
+        data = self._data
+        for i in range(1, len(data)):
+            if data[(i - 1) // 2][0] > data[i][0]:
                 return False
         return True
     def is_empty(self):
-        return len(self.heap) == 0
+        return len(self._data) == 0
     def __len__(self):
-        return len(self.heap)
-    
+        return len(self._data)

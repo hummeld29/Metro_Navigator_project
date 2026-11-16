@@ -69,13 +69,13 @@ class LinkedList:
         
         while current is not None:
             if current.value == value:
-                if previous is None:  # Removing the head
+                if previous is None:  
                     self.head = current.next
-                    if self.head is None:  # List became empty
+                    if self.head is None:  
                         self.tail = None
                 else:
                     previous.next = current.next
-                    if previous.next is None:  # Removed the tail
+                    if previous.next is None:  
                         self.tail = previous
                 self.size -= 1
                 return True
@@ -104,7 +104,7 @@ class LinkedList:
         removed_value = current.next.value
         current.next = current.next.next
         
-        if current.next is None:  # We removed the tail node
+        if current.next is None:  
             self.tail = current
             
         self.size -= 1
@@ -113,7 +113,7 @@ class LinkedList:
     def reverse(self):
         previous = None
         current = self.head
-        self.tail = self.head  # The current head will become the new tail
+        self.tail = self.head 
         
         while current is not None:
             next_node = current.next
@@ -121,7 +121,7 @@ class LinkedList:
             previous = current
             current = next_node
             
-        self.head = previous  # The last node becomes the new head
+        self.head = previous  
 
     def clear(self):
         self.head = None
@@ -129,10 +129,10 @@ class LinkedList:
         self.size = 0
 
     def is_empty(self):
-        return self.size == 0
+        return self.head is None
 
     def to_list(self):
-        return list(self)  # Leverages the __iter__ method
+        return list(self)  
 
     def __len__(self):
         return self.size
