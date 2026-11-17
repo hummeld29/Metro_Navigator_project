@@ -144,8 +144,10 @@ class LinkedList:
             current = current.next
 
     def __str__(self):
-        if self.is_empty():
-            return "None"
-        parts = [str(x) for x in self]
+        parts = []
+        current = self.head
+        while current is not None:
+            parts.append(str(current.value))
+            current = current.next
         parts.append("None")
-        return " -> ".join(parts) + " -> None"
+        return " -> ".join(parts)

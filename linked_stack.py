@@ -1,7 +1,7 @@
 from linked_list import LinkedList
 
 
-class stack:
+class Stack:
     def __init__(self):
         self.linked_list = LinkedList()
 
