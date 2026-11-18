@@ -55,7 +55,7 @@ def hot_potato(names, k):
         eliminated.append(queue.dequeue())
         remaining -= 1
     return eliminated, queue.dequeue()
-def board_passengers(self, seats_available, names):
+def board_passengers( seats_available, names):
     if not isinstance(seats_available, int) or isinstance(seats_available, bool):
         raise TypeError("seats_available must be an integer")
     if seats_available < 0:
